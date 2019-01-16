@@ -29,6 +29,14 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget wrongLettersSection = Row(
       children: [
         Text(
+            ''
+        )
+      ]
+  );
+
+  Widget answerSection = Row(
+      children: [
+        Text(
             '_ _ _ _ _ _'
         )
       ]
@@ -42,7 +50,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Column(
         children: <Widget>[
-          wrongLettersSection
+          wrongLettersSection,
+          answerSection
         ],
       ),
     );
