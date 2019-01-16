@@ -42,6 +42,12 @@ class _MyHomePageState extends State<MyHomePage> {
       ]
   );
 
+  Widget userInput = Row(
+      children: [
+
+    ]
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,7 +57,8 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Column(
         children: <Widget>[
           wrongLettersSection,
-          answerSection
+          answerSection,
+          userInput
         ],
       ),
     );
