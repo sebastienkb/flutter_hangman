@@ -26,41 +26,47 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  Widget wrongLettersSection = Row(
-      children: [
-        Text(
-            ''
-        )
-      ]
-  );
+  Widget imageSection = Row(children: [Image.asset('assets/Step0.png')]);
 
-  Widget answerSection = Row(
-      children: [
-        Text(
-            '_ _ _ _ _ _'
-        )
-      ]
-  );
+  Widget wrongLettersSection = Row(children: [Text('A B C')]);
 
-  Widget userInput = Row(
-      children: [
-
-    ]
-  );
+  Text answerSection = Text('_ _ _ _ _ _');
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          title: Text(widget.title)
+    Widget userInput = TextField(
+      decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: 'Please enter a letter'
       ),
+    );
+
+    RaisedButton button = new RaisedButton(
+      child: new Text('Play!'),
+      color: Colors.blueAccent,
+      onPressed: toto(),
+    );
+
+    return Scaffold(
+      appBar: AppBar(title: Text(widget.title)),
       body: Column(
         children: <Widget>[
+          imageSection,
           wrongLettersSection,
           answerSection,
-          userInput
+          userInput,
+          button
         ],
       ),
     );
+  }
+
+  updateAnswer() {
+
+    answerSection = Text('potato');
+  }
+  toto() {
+
+    answerSection = Text('TOTO');
   }
 }
