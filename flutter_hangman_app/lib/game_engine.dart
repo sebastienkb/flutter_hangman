@@ -1,27 +1,32 @@
-import 'package:flutter/material.dart';
+import 'package:random_words/random_words.dart';
+import "dart:math";
 
 enum Progress { inProgress, won, lost }
 
 class GameEngine {
 
-  int _allowedAttempts;
-  String _answer;
+  int _allowedAttempts = 6;
+  String answer;
 
   String wrongAnswers;
   String currentAnswer;
 
-  GameEngine(String answer) {
-    this._allowedAttempts = 7;
-    this._answer = answer.toUpperCase();
-    this.currentAnswer = answer.replaceAll(new RegExp(r'\w'), "_"); // _____
+  GameEngine() {
+    setup();
+  }
+
+  setup() {
+    answer = nouns[new Random().nextInt(nouns.length)].toUpperCase();
+    print(answer);
+    currentAnswer = answer.replaceAll(new RegExp(r'\w'), "_"); // _____
     wrongAnswers = "";
   }
 
   giveAnswer(String letter) {
     letter = letter.toUpperCase();
     var foundCorrectLetter = false;
-    for(var i = 0; i < _answer.length; i++) {
-      if (_answer[i] == letter) {
+    for(var i = 0; i < answer.length; i++) {
+      if (answer[i] == letter) {
         currentAnswer = currentAnswer.replaceRange(i, i + 1, letter); // shit ?
         foundCorrectLetter = true;
       }

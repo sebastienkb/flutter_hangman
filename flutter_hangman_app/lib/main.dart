@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'game_engine.dart';
+import 'package:random_words/random_words.dart';
 
 void main() => runApp(MyApp());
 
@@ -27,7 +28,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  GameEngine gameEngine = GameEngine("TESLA");
+  GameEngine gameEngine = GameEngine();
 
   Image imageSection = Image.asset('assets/Step0.png');
   var answerController = new TextEditingController();
@@ -36,20 +37,34 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void refresh() {
     setState(() {
-      gameEngine.giveAnswer(userInputController.text.substring(0, 1));
+      if (userInputController.text.length >= 1) {
+        gameEngine.giveAnswer(userInputController.text.substring(0, 1));
+      }
       answerController.text = gameEngine.prettyString(gameEngine.currentAnswer);
       wrongAnswersController.text = gameEngine.prettyString(gameEngine.wrongAnswers);
       userInputController.text = "";
       imageSection = Image.asset(gameEngine.imageName());
       if (gameEngine.currentProgress() != Progress.inProgress) {
         var alertDialog = AlertDialog(
-            title: Text("You " + gameEngine.currentProgress().toString().split(".")[1] + " !")
+          title: Text("You " + gameEngine.currentProgress().toString().split(".")[1] + " !\nThe correct answer was: \n\n" + gameEngine.answer),
+          actions: <Widget>[
+            FlatButton(
+              child: new Text('Again!'),
+              onPressed: () {
+                gameEngine.setup();
+                refresh();
+                Navigator.of(context, rootNavigator: true).pop();
+              }
+            )
+          ]
         );
-        showDialog(context: context, builder: (BuildContext context) {
-          return alertDialog;
-        });
-      } else {
-
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return alertDialog;
+          }
+        );
       }
     });
   }
@@ -74,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
       controller: userInputController,
       onChanged: (newValue) {
         userInputController.text = newValue.substring(0, 1);
-      },
+      }
     );
 
     answerController.text = gameEngine.prettyString(gameEngine.currentAnswer);
