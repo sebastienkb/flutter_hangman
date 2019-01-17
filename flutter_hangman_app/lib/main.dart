@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'game_engine.dart';
 
 void main() => runApp(MyApp());
 
@@ -24,64 +25,37 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class GameEngine {
-
-  int attempts;
-  int allowedAttempts;
-  String answer;
-  String wrongAnswers;
-  String currentAnswer;
-
-  GameEngine(String answer, int allowedAttempts) {
-    this.attempts = 0;
-    this.allowedAttempts = allowedAttempts;
-    this.answer = answer.toUpperCase();
-    this.currentAnswer = answer.replaceAll(new RegExp(r'\w'), "_"); // _____
-    print(currentAnswer);
-    wrongAnswers = "";
-  }
-
-  giveAnswer(String letter) {
-    letter = letter.toUpperCase();
-    var foundCorrectLetter = false;
-    for(var i = 0; i < answer.length; i++) {
-      if (answer[i] == letter) {
-        currentAnswer = currentAnswer.replaceRange(i, i + 1, letter); // shit ?
-        foundCorrectLetter = true;
-      }
-    }
-
-    if (!foundCorrectLetter) {
-      attempts++;
-      this.wrongAnswers += letter;
-    }
-  }
-
-  String imageName() {
-    return "assets/Step" + attempts.toString() + ".png";
-  }
-
-  String prettyString(String s) {
-    String tmp = "";
-    for (var letter in s.split('')) {
-      tmp += letter + " ";
-    }
-    return tmp;
-  }
-}
-
 class _MyHomePageState extends State<MyHomePage> {
 
-  GameEngine gameEngine = GameEngine("TESLA", 7);
-//  Widget imageSection = Row(children: [Image.asset('assets/Step0.png')]);
+  GameEngine gameEngine = GameEngine("TESLA");
+
   Image imageSection = Image.asset('assets/Step0.png');
+  var answerController = new TextEditingController();
+  var wrongAnswersController = new TextEditingController();
+  var userInputController = new TextEditingController();
+
+  void refresh() {
+    setState(() {
+      gameEngine.giveAnswer(userInputController.text);
+      answerController.text = gameEngine.prettyString(gameEngine.currentAnswer);
+      wrongAnswersController.text = gameEngine.prettyString(gameEngine.wrongAnswers);
+      userInputController.text = "";
+      imageSection = Image.asset(gameEngine.imageName());
+      if (gameEngine.currentProgress() != Progress.inProgress) {
+        var alertDialog = AlertDialog(
+            title: Text("You " + gameEngine.currentProgress().toString().split(".")[1] + " !")
+        );
+        showDialog(context: context, builder: (BuildContext context) {
+          return alertDialog;
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    var answerController = new TextEditingController();
-    var wrongAnswersController = new TextEditingController();
-    var userInputController = new TextEditingController();
 
+    print("build()");
     TextField answerSection = TextField(
       controller: answerController
     );
@@ -96,20 +70,13 @@ class _MyHomePageState extends State<MyHomePage> {
       controller: userInputController,
     );
 
-    for (var i = 0; i < gameEngine.answer.length; i++) {
-      answerController.text += "_ ";
-    }
+    answerController.text = gameEngine.prettyString(gameEngine.currentAnswer);
 
     RaisedButton button = new RaisedButton(
         child: new Text('Play!'),
         color: Colors.blueAccent,
         onPressed: () {
-          gameEngine.giveAnswer(userInputController.text);
-          answerController.text = gameEngine.prettyString(gameEngine.currentAnswer);
-          wrongAnswersController.text = gameEngine.prettyString(gameEngine.wrongAnswers);
-          print(gameEngine.imageName());
-          imageSection = Image.asset(gameEngine.imageName());
-          userInputController.text = "";
+          refresh();
         });
 
     return Scaffold(
