@@ -36,7 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void refresh() {
     setState(() {
-      gameEngine.giveAnswer(userInputController.text);
+      gameEngine.giveAnswer(userInputController.text.substring(0, 1));
       answerController.text = gameEngine.prettyString(gameEngine.currentAnswer);
       wrongAnswersController.text = gameEngine.prettyString(gameEngine.wrongAnswers);
       userInputController.text = "";
@@ -48,6 +48,8 @@ class _MyHomePageState extends State<MyHomePage> {
         showDialog(context: context, builder: (BuildContext context) {
           return alertDialog;
         });
+      } else {
+
       }
     });
   }
@@ -55,19 +57,24 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
 
-    print("build()");
     TextField answerSection = TextField(
+      enabled: false,
       controller: answerController
     );
 
     TextField wrongAnswersSection = TextField(
+      enabled: false,
       controller: wrongAnswersController
     );
 
     TextField userInput = TextField(
+      autofocus: true,
       decoration: InputDecoration(
           border: InputBorder.none, hintText: 'Please enter a letter'),
       controller: userInputController,
+      onChanged: (newValue) {
+        userInputController.text = newValue.substring(0, 1);
+      },
     );
 
     answerController.text = gameEngine.prettyString(gameEngine.currentAnswer);
